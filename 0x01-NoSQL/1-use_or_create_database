@@ -1,0 +1,2 @@
+// Uses creates a MongoDB database and if it doesn't exist, creates it.
+use my_db;
