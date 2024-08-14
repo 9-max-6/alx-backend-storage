@@ -38,4 +38,4 @@ def get_page(url: str) -> str:
     """a function to fetch from a url using the requests module
     """
     with requests.get(url) as resp:
-        return resp
+        return resp.text
