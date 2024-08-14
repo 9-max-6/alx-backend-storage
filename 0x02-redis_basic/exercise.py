@@ -3,7 +3,7 @@
 """
 import redis
 import uuid
-from typing import Union, Callable
+from typing import Union, Callable, Any
 from functools import wraps
 
 
@@ -12,11 +12,11 @@ def count_calls(method: Callable) -> Callable:
     the number of types a function has been called
     """
     @wraps(method)
-    def wrapper(self, data: Union[str, bytes, int, float]):
+    def wrapper(self, *args, **kwargs) -> Any:
         """Wrapper function increment the value of key in redis
         """
         self._redis.incr(method.__qualname__)
-        return method(self, data)
+        return method(self, *args, **kwargs)
     return wrapper
 
 
