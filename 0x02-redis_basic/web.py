@@ -13,7 +13,7 @@ redis_connection = redis.Redis()
 def cacher(method: Callable) -> Callable:
     """a function to implement the caching"""
     @wraps(method)
-    def wrapper(*args, **kwargs) -> Any:
+    def wrapper(*args, **kwargs) -> str:
         """ the wrapper that adds functionality and calls the
         decorated function """
         count_name = f"count:{args[0]}"
