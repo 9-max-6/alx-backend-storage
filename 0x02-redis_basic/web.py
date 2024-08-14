@@ -23,7 +23,8 @@ def cacher(method: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         """ the wrapper that adds functionality and calls the
         decorated function """
-        redis_._object.incr("count:{url}")
+        count_name = f"count:{args[0]}"
+        redis_._object.incr(count_name)
         cache_key = method.__qualname__ + ":cache"
         cached_result = redis_._object.get(cache_key)
 
@@ -31,6 +32,7 @@ def cacher(method: Callable) -> Callable:
             return cached_result.decode('utf-8')
         else:
             result = method(*args, **kwargs)
+            redis_._object.set(count_name,0)
             redis_._object.setex(cached_result, 10, str(result))
             return result
     return wrapper
