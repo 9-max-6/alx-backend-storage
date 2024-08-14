@@ -7,14 +7,7 @@ from typing import Callable, Any
 from functools import wraps
 
 
-class Cache():
-    """ class to encapsulate the redis connection"""
-    def __init__(self, *args, **kwargs):
-        """init"""
-        self._object = redis.Redis()
-
-
-redis_ = Cache()
+redis_connection = redis.Redis()
 
 
 def cacher(method: Callable) -> Callable:
@@ -24,18 +17,18 @@ def cacher(method: Callable) -> Callable:
         """ the wrapper that adds functionality and calls the
         decorated function """
         count_name = f"count:{args[0]}"
-        redis_._object.incr(count_name)
+        redis_connection.incr(count_name)
         cache_key = method.__qualname__ + ":cache"
-        cached_result = redis_._object.get(cache_key)
+        cached_result = redis_connection.get(cache_key)
         print(cached_result)
         if cached_result:
             return cached_result.decode('utf-8')
-        
+
         else:
             result = method(*args, **kwargs)
             if result:
-                redis_._object.set(count_name, 0)
-                redis_._object.setex(cache_key, 10, result.text)
+                redis_connection.set(count_name, 0)
+                redis_connection.setex(cache_key, 10, result.text)
                 return result
     return wrapper
 
