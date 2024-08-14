@@ -3,7 +3,7 @@
 """
 import redis
 import requests
-from typing import Callable, Any
+from typing import Callable
 from functools import wraps
 
 
@@ -20,7 +20,6 @@ def cacher(method: Callable) -> Callable:
         redis_connection.incr(count_name)
         cache_key = method.__qualname__ + ":cache"
         cached_result = redis_connection.get(cache_key)
-        print(cached_result)
         if cached_result:
             return cached_result.decode('utf-8')
 
@@ -37,4 +36,5 @@ def cacher(method: Callable) -> Callable:
 def get_page(url: str) -> str:
     """a function to fetch from a url using the requests module
     """
-    return requests.get(url).text
+    with requests.get(url) as resp:
+        return resp.text
