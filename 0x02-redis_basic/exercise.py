@@ -29,11 +29,10 @@ def call_history(method: Callable) -> Callable:
         """
         input_key = method.__qualname__ + ":inputs"
         output_key = method.__qualname__ + ":outputs"
-        for arg in args:
-            self._redis.rpush(str(input_key), str(arg))
+        self._redis.rpush(input_key, str(args))
 
         output = method(self, *args, **kwargs)
-        self._redis.rpush(str(output_key), str(output))
+        self._redis.rpush(output_key, str(output))
         return output
     return wrapper
 
@@ -46,6 +45,7 @@ class Cache():
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ store method that takes a data argument
         and returns a string.
