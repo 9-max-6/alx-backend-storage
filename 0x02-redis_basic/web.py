@@ -12,7 +12,9 @@ class Cache():
         """init"""
         self._object = redis.Redis()
 
+
 redis_ = Cache()
+
 
 def cacher(method: Callable) -> Callable:
     """a function to implement the caching"""
@@ -29,6 +31,8 @@ def cacher(method: Callable) -> Callable:
         else:
             result = method(*args, **kwargs)
             redis_._object.setex(cached_result, 10, str(result))
+            return result
+    return wrapper
         
 
 @cacher
