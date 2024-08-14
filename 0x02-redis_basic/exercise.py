@@ -20,13 +20,22 @@ class Cache():
         rand_key = uuid.uuid4()
         if self._redis.mset({str(rand_key): data}):
             return str(rand_key)
-    def get(self, key: str, fn: Callable = None) -> str:
+    def get(self, key: str, fn: Callable = None) -> Union[str, float, int, bytes]:
         """This callable will be used to convert the data
         back to the desired format.
         """
         value = self._redis.get(key)
-        if value:
-            if fn:
-                return fn(value)
-            else:
-                return value
+        if fn:
+            return fn(value)
+        else:
+            return value
+
+    def get_str(self, key: str) -> str:
+        """returns a string value from Redis data storage.
+        """
+        return self.get(key, lambda x: x.decode("utf-8"))
+
+    def get_int(self, key: str) -> int:
+        """returns a integer value from Redis data storage.
+        """
+        return self.get(key, lambda x: int(x))
