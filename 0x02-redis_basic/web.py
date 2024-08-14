@@ -32,7 +32,7 @@ def cacher(method: Callable) -> Callable:
             return cached_result.decode('utf-8')
         else:
             result = method(*args, **kwargs)
-            redis_._object.set(count_name,0)
+            redis_._object.set(count_name, 0)
             redis_._object.setex(cached_result, 10, str(result))
             return result
     return wrapper
