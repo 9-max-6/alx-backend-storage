@@ -37,5 +37,4 @@ def cacher(method: Callable) -> Callable:
 def get_page(url: str) -> str:
     """a function to fetch from a url using the requests module
     """
-    with requests.get(url) as resp:
-        return resp.text
+    return requests.get(url).text
