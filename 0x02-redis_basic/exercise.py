@@ -18,5 +18,5 @@ class Cache():
         and returns a string.
         """
         rand_key = uuid.uuid4()
-        if self._redis.mset({rand_key: data}):
-            return rand_key
+        if self._redis.mset({str(rand_key): data}):
+            return str(rand_key)
