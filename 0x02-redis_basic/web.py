@@ -6,6 +6,7 @@ import requests
 from typing import Callable
 from functools import wraps
 
+
 class Cache():
     """ class to encapsulate the redis connection"""
     def __init__(self, *args, **kwargs):
@@ -24,7 +25,7 @@ def cacher(method: Callable) -> Callable:
         decorated function """
         redis_._object.incr("count:{url}")
         cache_key = method.__qualname__ + ":cache"
-        cached_result =  redis_._object.get(cache_key)
+        cached_result = redis_._object.get(cache_key)
 
         if cached_result:
             return cached_result.decode('utf-8')
@@ -33,7 +34,7 @@ def cacher(method: Callable) -> Callable:
             redis_._object.setex(cached_result, 10, str(result))
             return result
     return wrapper
-        
+
 
 @cacher
 def get_page(url: str) -> str:
