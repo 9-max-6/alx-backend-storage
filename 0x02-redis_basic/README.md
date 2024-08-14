@@ -41,38 +41,38 @@ Install Redis on Ubuntu 18.04
 
 Use Redis in a container
 
-Redis server is stopped by default - when you are starting a container, you should start it with: service redis-server start
-Tasks 0. Writing strings to Redis
-mandatory
+    Redis server is stopped by default - when you are starting a container, you should start it with: service redis-server start
+    Tasks 0. Writing strings to Redis
+    mandatory
 
-Create a Cache class. In the **init** method, store an instance of the Redis client as a private variable named \_redis (using redis.Redis()) and flush the instance using flushdb.
+    Create a Cache class. In the **init** method, store an instance of the Redis client as a private variable named \_redis (using redis.Redis()) and flush the instance using flushdb.
 
-Create a store method that takes a data argument and returns a string. The method should generate a random key (e.g. using uuid), store the input data in Redis using the random key and return the key.
+    Create a store method that takes a data argument and returns a string. The method should generate a random key (e.g. using uuid), store the input data in Redis using the random key and return the key.
 
-Type-annotate store correctly. Remember that data can be a str, bytes, int or float.
+    Type-annotate store correctly. Remember that data can be a str, bytes, int or float.
 
-bob@dylan:~$ cat main.py
-#!/usr/bin/env python3
-"""
-Main file
-"""
-import redis
+        bob@dylan:~$ cat main.py
+        #!/usr/bin/env python3
+        """
+        Main file
+        """
+        import redis
 
-Cache = **import**('exercise').Cache
+        Cache = **import**('exercise').Cache
 
-cache = Cache()
+        cache = Cache()
 
-data = b"hello"
-key = cache.store(data)
-print(key)
+        data = b"hello"
+        key = cache.store(data)
+        print(key)
 
-local_redis = redis.Redis()
-print(local_redis.get(key))
+        local_redis = redis.Redis()
+        print(local_redis.get(key))
 
-bob@dylan:~$ python3 main.py
-3a3e8231-b2f6-450d-8b0e-0f38f16e8ca2
-b'hello'
-bob@dylan:~$
+        bob@dylan:~$ python3 main.py
+        3a3e8231-b2f6-450d-8b0e-0f38f16e8ca2
+        b'hello'
+        bob@dylan:~$
 
 Repo:
 
@@ -93,62 +93,62 @@ Also, implement 2 new methods: get_str and get_int that will automatically param
 
 The following code should not raise:
 
-cache = Cache()
+    cache = Cache()
 
-TEST_CASES = {
-b"foo": None,
-123: int,
-"bar": lambda d: d.decode("utf-8")
-}
+    TEST_CASES = {
+    b"foo": None,
+    123: int,
+    "bar": lambda d: d.decode("utf-8")
+    }
 
-for value, fn in TEST_CASES.items():
-key = cache.store(value)
-assert cache.get(key, fn=fn) == value
+    for value, fn in TEST_CASES.items():
+    key = cache.store(value)
+    assert cache.get(key, fn=fn) == value
 
-Repo:
+    Repo:
 
-    GitHub repository: alx-backend-storage
-    Directory: 0x02-redis_basic
-    File: exercise.py
+        GitHub repository: alx-backend-storage
+        Directory: 0x02-redis_basic
+        File: exercise.py
 
 2. Incrementing values
    mandatory
 
-Familiarize yourself with the INCR command and its python equivalent.
+   Familiarize yourself with the INCR command and its python equivalent.
 
-In this task, we will implement a system to count how many times methods of the Cache class are called.
+   In this task, we will implement a system to count how many times methods of the Cache class are called.
 
-Above Cache define a count_calls decorator that takes a single method Callable argument and returns a Callable.
+   Above Cache define a count_calls decorator that takes a single method Callable argument and returns a Callable.
 
-As a key, use the qualified name of method using the **qualname** dunder method.
+   As a key, use the qualified name of method using the **qualname** dunder method.
 
-Create and return function that increments the count for that key every time the method is called and returns the value returned by the original method.
+   Create and return function that increments the count for that key every time the method is called and returns the value returned by the original method.
 
-Remember that the first argument of the wrapped function will be self which is the instance itself, which lets you access the Redis instance.
+   Remember that the first argument of the wrapped function will be self which is the instance itself, which lets you access the Redis instance.
 
-Protip: when defining a decorator it is useful to use functool.wraps to conserve the original function’s name, docstring, etc. Make sure you use it as described here.
+   Protip: when defining a decorator it is useful to use functool.wraps to conserve the original function’s name, docstring, etc. Make sure you use it as described here.
 
-Decorate Cache.store with count_calls.
+   Decorate Cache.store with count_calls.
 
 bob@dylan:~$ cat main.py
 #!/usr/bin/env python3
 """ Main file """
 
-Cache = **import**('exercise').Cache
+    Cache = **import**('exercise').Cache
 
-cache = Cache()
+    cache = Cache()
 
-cache.store(b"first")
-print(cache.get(cache.store.**qualname**))
+    cache.store(b"first")
+    print(cache.get(cache.store.**qualname**))
 
-cache.store(b"second")
-cache.store(b"third")
-print(cache.get(cache.store.**qualname**))
+    cache.store(b"second")
+    cache.store(b"third")
+    print(cache.get(cache.store.**qualname**))
 
-bob@dylan:~$ ./main.py
-b'1'
-b'3'
-bob@dylan:~$
+    bob@dylan:~$ ./main.py
+    b'1'
+    b'3'
+    bob@dylan:~$
 
 Repo:
 
